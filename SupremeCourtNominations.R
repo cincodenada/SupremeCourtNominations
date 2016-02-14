@@ -17,6 +17,7 @@ makedate(nominations, list('Submission.Date','Result.Date'))
 
 succession = subset(succession, Action != 'Oath of office')
 # Tried to do tail(strsplit(x," ")) instead of the second gsub, but...shit got cray
-succession$Last.Name = sapply(succession$Justice, function(x) { x=gsub("(, \\w+\\.| I+)$","",x); gsub(".*\\s+(\\w+)","\\1",x) })
+succession$Last.Name = sapply(succession$Justice, function(x) { x=gsub("(, \\w+\\.| I+)$","",x); regmatches(x,regexpr("((?:Van )?\\S+)$",x)) })
+colnames(succession) <- c('Vacancy.Date','Vacancy.Name','Vacancy.Reason','Last.Name')
 
-joined = merge(nominations,succession,by.x='Replacing',by.y='Last.Name',all=T)
+joined = merge(nominations,succession,by.x='Replacing',by.y='Last.Name',all.x=T)
