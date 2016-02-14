@@ -1,6 +1,6 @@
 library(ggplot2)
 
-succession = read.csv('succession.csv')
+succession = read.csv('succession.csv',stringsAsFactors=F)
 nominations = read.csv('nominations.csv')
 
 makedate = function(frame, cols) {
@@ -16,5 +16,7 @@ makedate(succession, 'Date')
 makedate(nominations, list('Submission.Date','Result.Date'))
 
 succession = subset(succession, Action != 'Oath of office')
+# Tried to do tail(strsplit(x," ")) instead of the second gsub, but...shit got cray
+succession$Last.Name = sapply(succession$Justice, function(x) { x=gsub("(, \\w+\\.| I+)$","",x); gsub(".*\\s+(\\w+)","\\1",x) })
 
-joined = merge(nominations,succession,by.x='Nominee',by.y='Justice',all=T)
+joined = merge(nominations,succession,by.x='Replacing',by.y='Last.Name',all=T)
