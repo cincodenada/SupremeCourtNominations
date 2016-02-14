@@ -14,3 +14,7 @@ makedate = function(frame, cols) {
 
 makedate(succession, 'Date')
 makedate(nominations, list('Submission.Date','Result.Date'))
+
+succession = subset(succession, Action != 'Oath of office')
+
+joined = merge(nominations,succession,by.x='Nominee',by.y='Justice',all=T)
