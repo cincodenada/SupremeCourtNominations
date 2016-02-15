@@ -43,10 +43,12 @@ joined$Result.Time = as.numeric(joined$Result.Date - joined$Submission.Date)/365
 # For our purposes, ignore people that were replaced before they retired
 #joined = joined[joined$Nomination.Time > 0,]
 
+joined$Display.Name = ifelse(joined$Distinguisher != "", as.character(joined$Distinguisher), as.character(joined$Last.Name))
+
 #joined$Vacancy.Term = as.numeric(joined$Vacancy.Date)/365
 joined$Submission.Term = maketerm(joined$Submission.Date)
 joined$Result.Term = joined$Submission.Term + joined$Result.Time
-joined$Label = paste(joined$Last.Name, " (", format(joined$Result.Date, "%b %Y"), ")", sep="")
+joined$Label = paste(joined$Display.Name, " (", format(joined$Result.Date, "%b %Y"), ", ", joined$Vote,")", sep="")
 
 joined = with(joined, joined[order(Submission.Term),])
 joined$rownum = 1:nrow(joined)
