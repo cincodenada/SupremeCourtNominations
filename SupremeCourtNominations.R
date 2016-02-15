@@ -49,10 +49,12 @@ joined$rownum = 1:nrow(joined)
 
 p = ggplot(joined) +
     geom_rect(ymin=0,ymax=nrow(joined),xmin=maketerm(as.Date("2015-11-01")),xmax=maketerm(as.Date("2016-11-01")),color="transparent",fill="gray",alpha=0.5) +
-    geom_vline(xintercept=maketerm(as.Date(Sys.time())),color="red") +
+    geom_vline(xintercept=maketerm(as.Date("2016-02-13")),color="red") +
     geom_segment(aes(x=Submission.Term,xend=Result.Term,y=rownum,yend=rownum,color=Result),size=2) +
     geom_text(aes(label=Label, y=rownum,x=Result.Term),hjust=-0.025,size=2.5) +
-    scale_x_continuous(expand=c(0,0),limits=c(2.5,4.5)) + ylim(99,NA)
+    scale_x_continuous(expand=c(0,0),limits=c(2.5,4.5)) +
+    scale_y_continuous(breaks=c(),limits=c(99,NA)) +
+    labs(title="Timing of US Supreme Court Nominations Relative to Presidential Term", x="Years into term", y="")
 
 png('Nominations.png',w=1000,h=500,res=90)
 p
