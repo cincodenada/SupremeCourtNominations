@@ -15,7 +15,7 @@ makedate = function(frame, cols) {
 }
 
 maketerm = function(x) {
-    (as.numeric(x)/365-3+(20/365))%%4
+    (as.numeric(format(x, "%Y")) + as.numeric(format(x, "%j"))/365-1+(20/365))%%4
 }
 
 succession = makedate(succession, 'Vacancy.Date')
@@ -47,8 +47,12 @@ joined = with(joined, joined[order(Submission.Term),])
 joined$rownum = 1:nrow(joined)
 
 p = ggplot(joined) +
-    geom_rect(ymin=0,ymax=nrow(joined),xmin=maketerm(as.Date("2015-11-01")),xmax=maketerm(as.Date("2016-11-01")),color="transparent",fill="gray") +
+    geom_rect(ymin=0,ymax=nrow(joined),xmin=maketerm(as.Date("2015-11-01")),xmax=maketerm(as.Date("2016-11-01")),color="transparent",fill="gray",alpha=0.5) +
+    geom_vline(xintercept=maketerm(as.Date(Sys.time())),color="red") +
     geom_segment(aes(x=Submission.Term,xend=Result.Term,y=rownum,yend=rownum,color=Result),size=2) +
     geom_text(aes(label=Label, y=rownum,x=Result.Term),hjust=-0.025,size=2.5) +
-    geom_vline(xintercept=maketerm(as.Date(Sys.time())),color="red") +
-    scale_x_continuous(expand=c(0,0),limits=c(0,5))
+    scale_x_continuous(expand=c(0,0),limits=c(2.5,4.5)) + ylim(107,NA)
+
+png('Nominations.png',w=1000,h=500,res=90)
+p
+dev.off()
