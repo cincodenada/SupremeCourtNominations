@@ -24,6 +24,7 @@ nominations = makedate(nominations, list('Submission.Date','Result.Date'))
 succession = subset(succession, Vacancy.Reason != 'Oath of office')
 succession = subset(succession, Vacancy.Reason != 'Promoted')
 nominations = subset(nominations, Replacing != 'Inaugural')
+nominations = subset(nominations, Result != 'no action')
 
 # Tried to do tail(strsplit(x," ")) instead of the second gsub, but...shit got cray
 succession$Last.Name = sapply(succession$Vacancy.Name, function(x) { x=gsub("(, \\w+\\.| I+)$","",x); regmatches(x,regexpr("((?:Van )?\\S+)$",x)) })
@@ -41,7 +42,7 @@ joined$Result.Time = as.numeric(joined$Result.Date - joined$Submission.Date)/365
 #joined$Vacancy.Term = as.numeric(joined$Vacancy.Date)/365
 joined$Submission.Term = maketerm(joined$Submission.Date)
 joined$Result.Term = joined$Submission.Term + joined$Result.Time
-joined$Label = paste(joined$Nominee, " (", format(joined$Result.Date, "%b %Y"), ")", sep="")
+joined$Label = paste(joined$Last.Name, " (", format(joined$Result.Date, "%b %Y"), ")", sep="")
 
 joined = with(joined, joined[order(Submission.Term),])
 joined$rownum = 1:nrow(joined)
@@ -51,7 +52,7 @@ p = ggplot(joined) +
     geom_vline(xintercept=maketerm(as.Date(Sys.time())),color="red") +
     geom_segment(aes(x=Submission.Term,xend=Result.Term,y=rownum,yend=rownum,color=Result),size=2) +
     geom_text(aes(label=Label, y=rownum,x=Result.Term),hjust=-0.025,size=2.5) +
-    scale_x_continuous(expand=c(0,0),limits=c(2.5,4.5)) + ylim(107,NA)
+    scale_x_continuous(expand=c(0,0),limits=c(2.5,4.5)) + ylim(99,NA)
 
 png('Nominations.png',w=1000,h=500,res=90)
 p
